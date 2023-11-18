@@ -79,7 +79,7 @@ function App() {
     yazar: "Ece Su Esirgemez",
     yorum_sayisi: 2,
     puan: 5,
-    id: 3,
+    id: 4,
   },
   ];
   React.useEffect(()=>{
