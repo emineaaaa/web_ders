@@ -1,18 +1,16 @@
 import "./App.css";
 import React from 'react'
 
-function Arama(){
-  const [aramaMetni,setAramaMetni]=React.useState(" ");
+function Arama(props){
+  
   function handleChange(event){
-    setAramaMetni(event.target.value);
-  }
+    props.onSearch(event);
+  };
   return(
     <div>
        <label htmlFor="arama">Ara: </label>
-    <input id="arama" type="text" onChange={handleChange}/>
-    <p>
-      <strong> {aramaMetni} aranıyor...</strong>
-    </p>
+    <input id="arama" type="text" onChange={handleChange} value={props.aramaMetni}/>
+    
     </div>
    
   );
@@ -41,6 +39,7 @@ function Liste(props){
 );
 }
 function App() {
+  const [aramaMetni,setAramaMetni]=React.useState(localStorage.getItem("aranan") || "React");
   const yaziListesi = [
     {
       baslik: "React Öğreniyorum",
@@ -58,14 +57,56 @@ function App() {
       puan: 5,
       id: 1,
     },
+    {
+      baslik: "Linkedin Hesabı",
+      url: "https://www.linkedin.com/in/emine-aydınlı-462204267/",
+      yazar: "Emine Aydınlı",
+      yorum_sayisi: 20,
+      puan: 4.5,
+      id: 2,
+    },
+    {
+      baslik: "JavaScript Öğreniyorum",
+      url: "https://www.google.com.tr/?hl=tr",
+      yazar: "Alperen Akal",
+      yorum_sayisi: 2,
+      puan: 5,
+      id: 3,
+    },
+    {
+    baslik: "Dil ve Konuşma Terapistliği Eğitimi",
+    url: "https://www.google.com.tr/?hl=tr",
+    yazar: "Ece Su Esirgemez",
+    yorum_sayisi: 2,
+    puan: 5,
+    id: 3,
+  },
   ];
+  React.useEffect(()=>{
+    localStorage.setItem("aranan",aramaMetni);
+  },[aramaMetni]);
+
+  const arananYazilar=yaziListesi.filter(
+    (item) =>
+      item.baslik.toLowerCase().includes(aramaMetni.toLowerCase()) ||
+      item.yazar.toLowerCase().includes(aramaMetni.toLowerCase())
+  );
+
+  //birinci aşama callback handler metodu oluşturma
+  function handlerSearch(event){
+    console.log(event.target.value);
+    setAramaMetni(event.target.value);
+  }
   return (
-    <div>
+   <>
       <h1>Yazılar</h1>
-     <Arama/>
+     <Arama aramaMetni={aramaMetni} onSearch={handlerSearch} />
+     <p>
+      <strong> {aramaMetni} aranıyor...</strong>
+    </p>
       <hr />
-      <Liste yazilar={yaziListesi}/>
-    </div>
+      <Liste yazilar={arananYazilar}/>
+    </>
   );
 }
 export default App;
